@@ -1,0 +1,15 @@
+/dist
+/node_modules
+*.yml
+*.yaml
+tsconfig.json
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.scss
+*.gif
+*.webp
+*.ttf
+index.html
+*.md
