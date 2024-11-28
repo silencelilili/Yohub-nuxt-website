@@ -1,0 +1,37 @@
+// :root {
+//   --el-color-primary: #3366FF;
+//   --el-button-size: 60px;
+// }
+// @import 'element-plus/theme-chalk/src/index.scss';
+@forward 'element-plus/theme-chalk/src/mixins/config.scss' with (
+  $namespace: 'yh'
+);
+
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'primary': (
+      'base': #3366FF,
+    ),
+    'success': (
+      'base': #67c23a,
+    ),
+    'warning': (
+      'base': #e6a23c,
+    ),
+    'danger': (
+      'base': #f56c6c,
+    ),
+    'error': (
+      'base': #f56c6c,
+    ),
+    'info': (
+      'base': #909399,
+    ),
+  ),
+  $border-radius: (
+    'base': 8px,
+  ),
+  $table: (
+    // 'tr-bg-color': #F3F4F5,
+  )
+);

@@ -1,0 +1,12 @@
+<template>
+  <!-- <NuxtLayout name="custom"> -->
+  <div>用户中心-我的工单</div>
+  <!-- </NuxtLayout> -->
+</template>
+<script lang="ts" setup>
+definePageMeta({
+  layout: 'custom',
+  middleware: ['user-center'],
+});
+</script>
+<style lang="scss" scoped></style>
