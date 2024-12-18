@@ -29,11 +29,24 @@ a {
   color: $text-color;
 }
 
-.layout-wrap{
+.layout-wrap {
+  width: 100%;
   background: #F3F4F5;
+  display: grid;
+  grid:
+    "layout-header" 72px
+    "layout-container" 1fr
+    "layout-footer" 56px
+    / 1fr;
+  gap: 0px;
 }
 
+// .layout-wrap{
+//   background: #F3F4F5;
+// }
+
 .layout-header {
+  grid-area: layout-header;
   position: fixed;
   top: 0;
   width: 100%;
@@ -43,6 +56,7 @@ a {
   line-height: $header-height;
 }
 .layout-footer{
+  grid-area: layout-footer;
   // background: #000;
   // color: #fff;
   // line-height: 24px;
@@ -57,9 +71,10 @@ a {
   width: 100%;
 }
 .layout-container{
+  grid-area: layout-container;
   min-height: calc(100vh - $header-height);
-  overflow: auto;
-  top: $header-height;
+  // overflow: auto;
+  // top: $header-height;
   // padding: 16px;
   position: relative;
   // display: flex;
@@ -97,14 +112,34 @@ a {
   min-height: calc(100vh - $header-height - 30px);
 }
 
+
+
 /* 手机（屏幕宽度小于等于 768px） */
 @media screen and (max-width: 768px) {
   /* 手机布局和样式 */
+  .password-position {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .login-container {
+      width: 80vw;
+      height: 70vh;
+    }
+  }
 }
  
 /* 平板电脑（屏幕宽度大于 768px 且小于等于 1024px） */
 @media screen and (min-width: 769px) and (max-width: 1024px) {
   /* 平板电脑布局和样式 */
+  .password-position {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .login-container {
+      width: 50vw;
+      height: 70vh;
+    }
+  }
 }
  
 /* 桌面电脑（屏幕宽度大于 1024px） */
@@ -116,6 +151,17 @@ a {
   .custom-page-wrap{
     max-width: 1440px;
   }
+  .password-position {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .login-container {
+      width: 31vw;
+      height: 74vh;
+      margin-right: 8.9375rem;
+    }
+  }
+ 
 }
 
 

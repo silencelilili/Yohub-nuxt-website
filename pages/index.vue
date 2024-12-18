@@ -4,14 +4,31 @@
     <!-- <div @click="changeName">{{ store.name }}</div>
     <NuxtIcon name="header-home" />
     <h1>{{ $t('name') }}</h1> -->
-    <div class="banner-top">
-      <img src="/assets/images/home/bg_top.png" class="w-100%" alt="" />
+    <div class="banner-top banner-bg">
       <div class="banner-div">
         <h3 class="font-size-6 mb-3">指尖一点，极速畅连</h3>
         <p class="mb-9">全球海外华人一键加速回国</p>
         <div class="download-btn mb-7">全球海外华人一键加速回国</div>
         <div class="download-btn-border">下载Mac版APP</div>
       </div>
+      <img
+        src="/assets/images/home/line.png"
+        class="w-100%"
+        style="scale: 0.8; position: absolute; z-index: 2"
+        alt=""
+      />
+      <img
+        src="/assets/images/home/img_2.png"
+        class="w-100%"
+        style="scale: 0.8; position: absolute; z-index: 1"
+        alt=""
+      />
+
+      <img
+        src="/assets/images/home/img_1.png"
+        style="position: absolute; top: 38px; right: 48px; scale: 0.9; z-index: 2"
+        alt=""
+      />
     </div>
     <div style="margin: 0 8vw">
       <div class="home-part">
@@ -25,7 +42,7 @@
       <div class="home-part">
         <img src="/assets/images/home/pic_02.png" alt="" />
         <div class="text-right">
-          <p class="home-part-title">在线游戏低延时专线加速</p>
+          <p class="home-part-title">在线游戏低延时专 线加速</p>
           <p class="home-part-desc">一键游戏加速，国服游戏任意畅玩</p>
         </div>
       </div>
@@ -59,6 +76,8 @@
 <script lang="ts" setup>
 import { getUserInfo, getConfigPost } from '~/service/user';
 import { useStore } from '../store/index';
+import PhoneAnimation from '@/plugins/lottie/data.json';
+
 const store = useStore();
 // function changeName() {
 //   store.changeName('new Name');
@@ -79,12 +98,21 @@ const store = useStore();
 }
 .banner-top {
   position: relative;
+  height: 100vh;
+}
+.banner-bg {
+  background-image: url('@/assets/images/home/bg_top.png');
+  // height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 .banner-div {
   position: absolute;
   top: 30vh;
   left: 20vw;
   color: #fff;
+  z-index: 3;
 }
 .download-btn {
   background: #55fa79;
@@ -113,6 +141,7 @@ const store = useStore();
   img {
     // width: 31.25rem /* 500/16 */;
     height: 28.75rem; /* 460/16 */
+    scale: 0.9;
   }
   .home-part-title {
     font-size: 2.5rem /* 40/16 */;

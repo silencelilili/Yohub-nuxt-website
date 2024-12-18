@@ -1,36 +1,43 @@
 <template>
-  <div :class="[' h-full bg-white py-8 px-12 mb-6 pos-relative mt-4', props.type ? '' : 'page-wrap']">
+  <div :class="[' bg-white py-8 px-12 mb-6 pos-relative mt-4', props.type ? '' : 'page-wrap']">
     <h3 v-if="!props.type" class="mb-6">可选订阅</h3>
-    <div class="subscribe-list grid md:grid-cols-3 xl:grid-cols-4 gap-10">
+    <div v-if="productList.length" class="subscribe-list grid md:grid-cols-3 xl:grid-cols-4 gap-10">
       <div
-        v-for="(item, index) in subscribeList"
+        v-for="(item, index) in productList"
         :key="index"
         :class="['subscribe-list-item', activeSubscribeIndex === index ? 'subscribe-list-item-active' : '']"
         @click="handleChooseSubscribe(item, index)"
       >
         <div class="item-tag">限时5折</div>
         <div class="flex-1 line-height-9 mt-8">
-          <div class="color-#666666">{{ item.title }}</div>
+          <div class="color-#666666">{{ item?.name }}</div>
           <div class="item-price">
-            <span class="font-size-3">¥</span><span class="font-size-7">{{ item.price }}</span>
+            <span class="font-size-3">¥</span><span class="font-size-7">{{ item?.price }}</span>
           </div>
           <div class="color-#C3B097">
             <s
-              ><span class="font-size-3">¥</span><span class="font-size-4">{{ item.originalPrice }}</span></s
+              ><span class="font-size-3">¥</span><span class="font-size-4">{{ item?.price }}</span></s
             >
           </div>
         </div>
-        <div class="unit-price">{{ item.unitPrice }}</div>
+        <div class="unit-price">{{ item?.price }}</div>
       </div>
     </div>
+    <el-skeleton v-else />
 
+    <!-- 权益说明 -->
     <div class="flex justify-between color-#99999D my-4">
       <span>包含VIP会员所有权益（时间卡不限流量，流量卡不限时间）</span>
       <span>最长支持30天退款（特价无退款），详见<a class="color-#3366FF">退款规则</a> </span>
     </div>
 
+    <!-- 支付账号 -->
+    <div v-if="store.isLogin" class="bg-#D6E0FE py-3 px-6 my-8">
+      <strong>请确认当前支付账号</strong>：{{ userInfo.user_name }}（{{ userInfo.email }}）
+    </div>
+
     <!-- 优惠码 -->
-    <div class="my-12">
+    <div class="my-8">
       <el-space>
         <span>优惠码</span>
         <el-input v-model="couponCode" style="width: 240px" placeholder="请输入优惠码" />
@@ -64,7 +71,7 @@
     <div class="line-height-9 mb-6">
       <div class="flex justify-between">
         <div>
-          Yohub VIP： <span class="fw-500">{{ paymentData.subscribe.title }} 限时5折</span>
+          Yohub VIP： <span class="fw-500">{{ paymentData.subscribe.name }} 限时5折</span>
         </div>
         <div>￥ {{ paymentData.subscribe.originalPrice }}</div>
       </div>
@@ -90,29 +97,82 @@
     </div>
 
     <div class="flex justify-center mt-16">
-      <el-button v-if="props.type" type="primary" class="w-360px h-61px">立即购买</el-button>
+      <el-button v-if="store.isLogin" type="primary" class="w-360px h-61px" @click="handleCreateOrder"
+        >立即购买</el-button
+      >
       <template v-else>
-        <el-button type="primary" class="w-360px h-61px">登录后购买</el-button>
-        <el-button type="primary" plain class="w-360px h-61px">注册即可免费加速</el-button>
+        <el-button type="primary" class="w-360px h-61px" @click="toLogin">登录后购买</el-button>
+        <el-button type="primary" plain class="w-360px h-61px" @click="toRegister">注册即可免费加速</el-button>
       </template>
     </div>
 
     <div v-if="!props.type" style="position: absolute; right: -216px; top: 0">
       <BannerVue />
     </div>
+
+    <!-- 支付弹窗dialog -->
+    <el-dialog
+      v-model="payDialogVisible"
+      title="完成支付"
+      width="480"
+      :footer="false"
+      center
+      align-center
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+    >
+      <!-- <div class="text-center">
+        <div class="font-size-24 fw-500 mb-4">
+          实付价：<span class="color-#FF0000"> ￥ {{ paymentData.subscribe.price }}</span>
+        </div>
+        <div id="qrcode-content"></div>
+        <p><img src="/assets/images/pay-ali.png" /> 请用支付宝进行扫码支付</p>
+
+        <div v-if="payResult === 'error'" class="m-4">
+          <el-button link type="primary" @click="refreshPayCode"> 刷新 </el-button>
+        </div>
+      </div> -->
+      <div v-if="payDialogVisible">
+        <PaymentVue ref="paymentRef" :order-info="paymentData.subscribe" :payType="activePayment" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script lang="ts" setup>
 import { subscribeList, paymentOptions } from '@/utils/subscribe';
 import BannerVue from './banner.vue';
+import QRCode from 'qrcode';
 import { defineProps } from 'vue';
+import { getProductList, checkCoupon, createOrder, getAlipayQrcode, getAlipayStatus } from '@/service/order';
+import { useStore } from '~/store/index';
+import PaymentVue from '../payment/index.vue';
 
+const store = useStore();
+
+const router = useRouter();
 const props = defineProps({
   type: {
     type: String,
     default: '',
   },
 });
+const userInfo = ref({ user_name: '', email: '' });
+// 初始化用户信息
+onMounted(async () => {
+  userInfo.value = (await store.asyncGetUserInfo()) as any;
+  _getProductList();
+});
+
+/**
+ * 商品列表
+ */
+const productList = ref([]);
+const _getProductList = async () => {
+  const { data } = await getProductList();
+
+  productList.value = Object.values(data) || ([...data.tabp, ...data.bandwidth, ...data.time] as any);
+};
+
 /**
  * 选择订阅方式
  */
@@ -127,7 +187,15 @@ const handleChooseSubscribe = (item: any, index: number) => {
  */
 const couponCode = ref('');
 // 验证优惠码
-const handleCheckCouponCode = () => {};
+const handleCheckCouponCode = () => {
+  if (!couponCode.value || !paymentData.value.subscribe.id) return;
+  checkCoupon({
+    coupon: couponCode.value,
+    product_id: paymentData.value.subscribe.id,
+  }).then((res) => {
+    console.log('checkCoupon------', res);
+  });
+};
 
 /**
  * 选择支付方式
@@ -147,6 +215,50 @@ const paymentData = ref({
   currency: 'CNY',
   subscribe: subscribeList[activeSubscribeIndex.value],
 });
+
+/**
+ * 立即购买
+ */
+const handleCreateOrder = () => {
+  createOrder({
+    coupon: couponCode.value,
+    product_id: paymentData.value.subscribe.id,
+  })
+    .then((res) => {
+      console.log('createOrder success ------', res);
+      ElMessage.success('创建订单成功');
+      payDialogVisible.value = true;
+      nextTick(() => {
+        handlePay({ amount: paymentData.value.subscribe.price, invoice_id: res?.invoice_id });
+      });
+    })
+    .catch((err) => {
+      // ElMessage.error('创建订单失败');
+    });
+  console.log('立即购买, paymentData.value', paymentData.value);
+};
+const toLogin = () => {
+  router.push('/login');
+};
+const toRegister = () => {
+  router.push('/register');
+};
+
+/**
+ * 支付
+ */
+const payDialogVisible = ref(false);
+const paymentRef = ref();
+const handlePay = (data: any) => {
+  const _data = {
+    invoice_id: data.invoice_id,
+    amount: data.amount,
+  };
+  paymentRef.value.createQrcode(_data).then((res) => {
+    console.log('createAlipayQrcodeApi success ------', res);
+    payDialogVisible.value = true;
+  });
+};
 </script>
 <style lang="scss" scoped>
 .subscribe-list {
@@ -182,6 +294,7 @@ const paymentData = ref({
       line-height: 36px;
       background: #f5dfcc;
       color: #543b19;
+      border-radius: 0 0 10px 10px;
     }
     .item-tag {
       position: absolute;

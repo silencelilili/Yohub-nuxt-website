@@ -14,16 +14,19 @@
         <el-form-item prop="password">
           <el-input v-model="formState.password" type="password" placeholder="请输入登录密码" />
         </el-form-item>
-        <el-form-item prop="password_confirmation">
-          <el-input v-model="formState.password_confirmation" type="password" placeholder="请确认登录密码" />
+        <el-form-item prop="confirm_password">
+          <el-input v-model="formState.confirm_password" type="password" placeholder="请确认登录密码" />
         </el-form-item>
-        <el-form-item prop="code">
-          <el-input v-model="formState.code" placeholder="请输入注册邀请码（可选）" />
+        <el-form-item prop="invite_code">
+          <el-input v-model="formState.invite_code" placeholder="请输入注册邀请码（可选）" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="w-full h-60px" @click="handleSubmit(ruleFormRef)">注册</el-button>
+          <el-button type="primary" class="w-full h-60px" v-loading="registerLoading" @click="handleSubmit(ruleFormRef)"
+            >注册</el-button
+          >
         </el-form-item>
       </el-form>
+      <div id="cf-turnstile" class="cf-turnstile" data-sitekey="" data-theme="light"></div>
 
       <p>已有账号？<el-link :underline="false" @click="toLogin">登录</el-link></p>
     </div>
@@ -35,19 +38,21 @@ import type { ComponentSize, FormInstance, FormRules } from 'element-plus';
 definePageMeta({
   layout: 'passport',
 });
+
 const router = useRouter();
 const ruleFormRef = ref();
 const formState = reactive({
+  tos: false,
   name: '',
   email: '',
   password: '',
-  password_confirmation: '',
-  code: '', // 邮箱验证码
+  confirm_password: '',
+  invite_code: '', // 邀请码
 });
 const rules = {
   name: [
     { required: true, message: '请输入昵称', trigger: 'blur' },
-    { min: 3, max: 5, message: '昵称长度3至5个字符', trigger: 'blur' },
+    { min: 3, max: 20, message: '昵称长度3至20个字符', trigger: 'blur' },
   ],
   email: [
     { required: true, message: '请输入邮箱', trigger: 'blur' },
@@ -57,25 +62,29 @@ const rules = {
     { required: true, message: '请输入密码', trigger: 'blur' },
     { min: 8, max: 16, message: '密码长度8至16个字符', trigger: 'blur' },
   ],
-  password_confirmation: [
+  confirm_password: [
     { required: true, message: '请输入确认密码', trigger: 'blur' },
     { min: 8, max: 16, message: '确认密码长度8至16个字符', trigger: 'blur' },
   ],
 };
 // 提交
+const registerLoading = ref(false);
 const handleSubmit = async (formEl: FormInstance | undefined) => {
   // TODO:
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
+      registerLoading.value = true;
       register(formState)
         .then((res) => {
           console.log(res);
           ElMessage.success('注册成功');
+          registerLoading.value = false;
           toLogin();
         })
         .catch((err) => {
           console.error(err);
+          registerLoading.value = false;
         });
     } else {
       console.log('error submit!', fields);

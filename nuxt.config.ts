@@ -13,6 +13,7 @@ export default defineNuxtConfig({
           content: 'YoHub',
         },
       ],
+      script: ['https://challenges.cloudflare.com/turnstile/v0/api.js'],
     },
     buildAssetsDir: '/static/', // 文件夹名称, 默认为:"/_nuxt/"
     rootId: 'yohub', // 自定义根元素的id，默认为:"__nuxt"
@@ -63,6 +64,9 @@ export default defineNuxtConfig({
   image: {
     provider: 'assets',
   },
+  plugins: [
+    '@/plugins/echarts.client.ts', // 确保路径正确指向你的插件文件
+  ],
   // nitro: {
   //   output: {
   //     publicDir: "./dist/public",

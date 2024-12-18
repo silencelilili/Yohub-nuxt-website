@@ -3,7 +3,7 @@ import $api from './request';
 import type { ILoginParams, IRegisterParams, IUserInfo } from './types';
 export * from './types';
 /**
- * 账号密码 登录
+ * 账号密码 登录(OK)
  * @param params
  * @returns
  */
@@ -21,7 +21,7 @@ export const register = (params: IRegisterParams) => {
   return $api.post('/auth/register', params);
 };
 /**
- * 退出登录
+ * 退出登录(OK)
  * @returns
  */
 export const logout = () => {
@@ -29,7 +29,7 @@ export const logout = () => {
 };
 
 /**
- * 获取用户信息
+ * 获取用户信息(OK)
  * @returns
  */
 export const getUserInfo = (userId?: string | number) => {
@@ -40,7 +40,7 @@ export const getUserInfo = (userId?: string | number) => {
 };
 
 /**
- * 修改用户名
+ * 修改用户名(OK)
  * @param
  * {
  * newusername:string
@@ -81,6 +81,14 @@ export const resetPassword = (data = {}) => {
  * 第三方登录
  *******************************************/
 /**
+ * 获取微信二维码接口(OK)
+ * @param {}
+ * @returns
+ */
+export const getWechatQrcode = () => {
+  return $api.post('/auth/get_wechat_qrcode', {});
+};
+/**
  * 微信扫码登录
  * @param params
  * @returns
@@ -90,15 +98,35 @@ export const wechatLogin = (params: any) => {
 };
 
 /**
+ * 获取QQ二维码接口
+ */
+export const getQqQrcode = () => {
+  return $api.post('/auth/get_qq_qrcode', {});
+};
+/**
  * 拉取用户路由配置
  * @returns
  */
 export const getConfigPost = (data: any) => {
   return $api.post('/user/config_post', data);
 };
+
 /**
- * 获取订单
+ * 用户流量信息
+ * @returns
  */
-export const getOrderList = () => {
-  return $api.post('/user/order/ajax', {});
+export const getTrafficInfo = () => {
+  return $api.get('/user/gettraffic', {});
+};
+/**
+ * 获取用户邀请信息
+ */
+export const getInviteInfo = () => {
+  return $api.post('/user/query_invite', {});
+};
+/**
+ * 获取用户公告内容
+ */
+export const getNoticeContent = () => {
+  return $api.get('/user/announcement', {});
 };

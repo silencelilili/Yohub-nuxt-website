@@ -16,6 +16,7 @@
     "@pinia/nuxt": "^0.5.5",
     "axios": "^1.7.7",
     "callapp-lib": "^3.5.3",
+    "echarts": "^5.5.1",
     "js-cookie": "^3.0.5",
     "nuxt": "^3.13.0",
     "nuxt-icons": "^3.2.1",

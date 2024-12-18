@@ -3,8 +3,8 @@ import { User, MessageBox, CollectionTag, Present, DocumentAdd, Reading } from '
 export const userNavList = [
   {
     title: '用户中心',
-    name: 'user-mine',
-    path: '/user-mine',
+    name: 'user',
+    path: '/user',
     icon: User,
     iconName: 'user-nav-mine',
   },
@@ -32,8 +32,8 @@ export const userNavList = [
 
   {
     title: '我的工单',
-    name: 'work-order',
-    path: '/work-order',
+    name: 'user-ticket',
+    path: '/user-ticket',
     icon: DocumentAdd,
     iconName: 'user-nav-order',
   },

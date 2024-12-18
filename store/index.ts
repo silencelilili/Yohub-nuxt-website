@@ -62,6 +62,9 @@ export const useStore = defineStore({
           resolve(this.userInfo);
           return;
         }
+        if (!this.isLogin) {
+          return;
+        }
         getUserInfo()
           .then((res) => {
             this.setInfo(res.data);

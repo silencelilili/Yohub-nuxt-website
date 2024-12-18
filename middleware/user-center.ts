@@ -6,7 +6,14 @@
 // }
 import { useStore } from '~/store/index';
 export default defineNuxtRouteMiddleware((to, from) => {
-  const _toName = to.name as string;
-  useStore().setUserActiveNavName(_toName);
-  return;
+  const store = useStore();
+  if (!store.isLogin && to.path !== '/') {
+    console.log('user-center 中间件---未登录, isLogin:', store.isLogin);
+    return navigateTo('/');
+  } else {
+    const _toName = to.name as string;
+    useStore().setUserActiveNavName(_toName);
+    console.log('user-center 中间件---已登录', to.path, store.isLogin);
+    return;
+  }
 });

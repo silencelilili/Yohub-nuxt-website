@@ -1,6 +1,7 @@
 <template>
   <!-- 我的账号 -->
   <div>
+    <UserInfoVue type="user-account" />
     <el-row :gutter="16">
       <el-col :span="14">
         <div class="mb-4 h-100%">
@@ -10,7 +11,7 @@
             <div class="account-left">
               <div class="item flex-center justify-between">
                 <span class="label">邮箱</span>
-                <span class="value">未绑定</span>
+                <span class="value">{{ userInfo?.email || '未绑定' }}</span>
                 <span class="operation">
                   <el-link :underline="false" type="primary" @click="handleUpdateEmail">更改</el-link>
                 </span>
@@ -67,7 +68,7 @@
                 </span>
               </div>
               <div class="item flex-center justify-between bg-#E4E9FF">
-                <img src="/assets/images/facebook.png" alt="" class="h-10 w-10" />
+                <img src="/assets/images/facebook.png" alt="" class="h-10 ml-2 mr-3" />
                 <span class="value">Facebook</span>
                 <span class="operation">
                   <span>去绑定</span>
@@ -201,7 +202,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { updatePassword } from '@/service/user';
+import UserInfoVue from '@/components/UserInfo.vue';
+
+import { updatePassword, type IUserInfo } from '@/service/user';
 import { useStore } from '@/store/index';
 definePageMeta({
   layout: 'custom',
@@ -209,6 +212,10 @@ definePageMeta({
 });
 const store = useStore();
 const router = useRouter();
+const userInfo = ref<IUserInfo>();
+onMounted(async () => {
+  userInfo.value = (await store.asyncGetUserInfo()) as IUserInfo;
+});
 
 // TODO:修改手机号
 const phoneDialogVisible = ref(false);

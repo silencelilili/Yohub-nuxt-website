@@ -2,43 +2,46 @@
   <!-- <NuxtLayout name="custom"> -->
   <!-- <div>用户中心-我的订阅</div> -->
   <!-- </NuxtLayout> -->
-
-  <el-card shadow="hover">
-    <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-      <el-tab-pane label="选择订阅计划" name="1">
-        <SubscribeVue type="user" />
-      </el-tab-pane>
-      <el-tab-pane label="我的历史订单" name="2">
-        <div class="py-4">
-          <el-table
-            :data="historyOrderData"
-            style="width: 100%"
-            :header-cell-style="{ background: '#E8EDFA', color: '#333333' }"
-            empty-text="无历史订单"
-          >
-            <el-table-column prop="id" label="订单编号" />
-            <el-table-column prop="product_type" label="购买服务卡" />
-            <el-table-column prop="price" label="订单金额" />
-            <el-table-column prop="status" label="订单状态" />
-            <el-table-column prop="create_time" label="创建时间" />
-          </el-table>
-          <div>
-            <el-pagination
-              :current-page="searchParams.currentPage"
-              :page-size="searchParams.pageSize"
-              layout="total, prev, pager, next, jumper"
-              :total="searchParams.total"
-              @change="handlePageChange"
-            />
+  <div>
+    <UserInfoVue />
+    <el-card shadow="hover">
+      <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+        <el-tab-pane label="选择订阅计划" name="1">
+          <SubscribeVue type="user" />
+        </el-tab-pane>
+        <el-tab-pane label="我的历史订单" name="2">
+          <div class="py-4">
+            <el-table
+              :data="historyOrderData"
+              style="width: 100%"
+              :header-cell-style="{ background: '#E8EDFA', color: '#333333' }"
+              empty-text="无历史订单"
+            >
+              <el-table-column prop="id" label="订单编号" />
+              <el-table-column prop="product_type" label="购买服务卡" />
+              <el-table-column prop="price" label="订单金额" />
+              <el-table-column prop="status" label="订单状态" />
+              <el-table-column prop="create_time" label="创建时间" />
+            </el-table>
+            <div>
+              <el-pagination
+                :current-page="searchParams.currentPage"
+                :page-size="searchParams.pageSize"
+                layout="total, prev, pager, next, jumper"
+                :total="searchParams.total"
+                @change="handlePageChange"
+              />
+            </div>
           </div>
-        </div>
-      </el-tab-pane>
-    </el-tabs>
-  </el-card>
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
+  </div>
 </template>
 <script lang="ts" setup>
+import UserInfoVue from '@/components/UserInfo.vue';
 import SubscribeVue from '@/pages/subscribe/index.vue';
-import { getOrderList } from '@/service/user';
+import { getOrderList } from '@/service/order';
 
 definePageMeta({
   layout: 'custom',

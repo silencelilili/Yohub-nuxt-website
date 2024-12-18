@@ -13,7 +13,9 @@
             <el-input v-model="formState.password" show-password placeholder="请输入密码" />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="w-full h-60px" @click="handleLogin">登录</el-button>
+            <el-button type="primary" class="w-full h-60px" v-loading="loginLoading" @click="handleLogin"
+              >登录</el-button
+            >
           </el-form-item>
         </el-form>
         <div class="flex justify-between">
@@ -24,6 +26,10 @@
       <!-- 微信登录 -->
       <div v-if="loginType === loginTypeEnum.WECHAT">
         <WechatPage @back="handleChangeLoginType" />
+      </div>
+      <!-- QQ登录 -->
+      <div v-if="loginType === loginTypeEnum.QQ">
+        <QQPage @back="handleChangeLoginType" />
       </div>
       <!-- 第三方登录方式 -->
       <div>
@@ -60,7 +66,9 @@
 import { login, getUserInfo, type ILoginParams } from '@/service/user';
 import { useStore } from '@/store/index';
 import WechatPage from './wechat.vue';
+import QQPage from './qq.vue';
 import { loginTypeEnum } from './config';
+import qqLogin from './qq_login';
 definePageMeta({
   layout: 'passport',
 });
@@ -74,15 +82,19 @@ const formState = reactive<ILoginParams>({
   remember_me: false,
   mfa_code: '',
 });
+const loginLoading = ref(false);
 const apiErrorMsg = ref('');
 const handleLogin = () => {
+  loginLoading.value = true;
   login(formState)
     .then((res) => {
       store.setLoginStatus(true);
+      loginLoading.value = false;
       router.push({ path: '/' });
     })
     .catch((err) => {
       console.error(err);
+      loginLoading.value = false;
       apiErrorMsg.value = err.msg;
     });
 };
@@ -101,16 +113,21 @@ const toForgot = () => {
 
 // 切换登录方式
 const handleChangeLoginType = (type: loginTypeEnum) => {
-  loginType.value = type;
+  if (type === loginTypeEnum.QQ) {
+    qqLogin();
+  } else {
+    loginType.value = type;
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .login-form-wrap {
   width: 25.5rem; // 408px
-  // padding: 3rem /* 48/16 */;
+  padding: 0 16px;
   height: 100%;
   margin: 0 auto;
+  background: #fff;
   .login-title {
     font-size: 2rem /* 32/16 */;
     text-align: center;
@@ -123,7 +140,7 @@ const handleChangeLoginType = (type: loginTypeEnum) => {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 1px solid #666;
+    // border: 1px solid #666;
     text-align: center;
     margin: 0 auto;
     line-height: 48px;

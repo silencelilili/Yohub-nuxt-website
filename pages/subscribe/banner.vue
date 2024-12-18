@@ -1,11 +1,13 @@
 <template>
   <!-- VIP信息 浮动的banner -->
-  <div class="bg-white banner-wrap">
-    <div class="font-size-6 fw-500 mt-7">VIP会员特权</div>
-    <div v-for="(item, index) in bannerList" :key="index">
-      <img :src="item.img" class="mb-4" style="width: 48px" />
-      <p>{{ item.label[0] }}</p>
-      <p>{{ item.label[1] }}</p>
+  <div class="bg-white">
+    <div class="font-size-6 fw-500 text-center py-6">VIP会员特权</div>
+    <div class="banner-wrap">
+      <div v-for="(item, index) in bannerList" :key="index">
+        <img :src="item.img" class="mb-4" style="width: 48px" />
+        <p>{{ item.label[0] }}</p>
+        <p>{{ item.label[1] }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -41,13 +43,18 @@ const bannerList = [
 </script>
 <style lang="scss" scoped>
 .banner-wrap {
-  position: absolute;
-  right: 0;
-  top: 0;
+  // position: absolute;
+  // right: 0;
+  // top: 0;
   width: 200px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 48px;
+  padding-bottom: 32px;
   div {
-    margin-bottom: 82px;
+    // margin-bottom: 82px;
     color: #333333;
   }
 }

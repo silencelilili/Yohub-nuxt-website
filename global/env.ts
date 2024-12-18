@@ -2,7 +2,7 @@ import { isUndef } from './is';
 
 // 正式环境
 export const PROD_ENV = {
-  SERVER_URL: 'https://1119.yohub.online/api', // 服务地址
+  SERVER_URL: '', // 服务地址 https://1119.yohub.online/api
   IS_DEV: 'false', // 是否是测试环境
 };
 

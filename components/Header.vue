@@ -2,7 +2,7 @@
   <div class="layout-header">
     <el-menu
       :default-active="activeIndex"
-      class="el-menu-demo"
+      style="height: 72px"
       mode="horizontal"
       :ellipsis="false"
       @select="handleSelect"
@@ -13,7 +13,7 @@
       <el-menu-item index="/">首页</el-menu-item>
       <el-menu-item index="/download">客户端下载</el-menu-item>
       <el-menu-item index="/subscribe">订阅计划</el-menu-item>
-      <el-menu-item index="/user-mine">用户中心</el-menu-item>
+      <el-menu-item v-if="!!_userInfo.id" index="/user">用户中心</el-menu-item>
       <el-menu-item v-if="!_userInfo.id" index="/login">登录/注册</el-menu-item>
 
       <el-sub-menu v-if="!!_userInfo.id" index="">

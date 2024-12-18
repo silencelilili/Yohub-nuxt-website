@@ -5,27 +5,14 @@
       <div class="flex custom-page-wrap">
         <UserNavVue @jump="onJump" />
         <div class="flex-1">
-          <UserInfoVue />
           <!-- <slot /> -->
           <!-- <NuxtPage /> -->
           <RouterView />
         </div>
       </div>
-
-      <Footer />
     </div>
+    <Footer />
   </div>
-
-  <!-- <div class="page-wrap">
-    <div class="flex">
-      <UserNavVue @jump="onJump" />
-      <div class="flex-1">
-        <UserInfoVue />
-        <slot />
-        <NuxtPage />
-      </div>
-    </div>
-  </div> -->
 </template>
 <script lang="ts" setup>
 import Header from '@/components/Header.vue';

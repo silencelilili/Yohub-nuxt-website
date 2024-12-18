@@ -22,7 +22,6 @@ function createRequestInstance(getServerUrl: () => string): AxiosInstance {
   });
   instance.interceptors.response.use(
     async (res) => {
-      console.log('res', res);
       const { config, data } = res;
       if (data.ret != 0) {
         return data;
